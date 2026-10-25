@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(bash scripts/scrub.sh)",
+      "Bash(bash scripts/setup.sh --check)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(**/.env)",
+      "Edit(**/.env)"
+    ]
+  }
+}

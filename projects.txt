@@ -1,0 +1,5 @@
+# Sibling project repos this workspace works in. One per line: <folder-name> <git-url>
+# Each one is expected at ../<folder-name> next to this repo. `/onboard <folder-name>` maps it.
+# Examples (delete these lines, add yours):
+# shop-api        https://github.com/example/shop-api.git
+# shop-web        https://github.com/example/shop-web.git

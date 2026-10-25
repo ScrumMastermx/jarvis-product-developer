@@ -1,0 +1,11 @@
+# Content gate: no credentials, personal paths or attribution trailers land in this repo. See SCRUB.md.
+name: scrub
+on:
+  push:
+  pull_request:
+jobs:
+  scrub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/scrub.sh
