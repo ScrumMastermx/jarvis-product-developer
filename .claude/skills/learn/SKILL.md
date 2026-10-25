@@ -14,7 +14,7 @@ description: |
 3. Check `notes/learnings.md` for an entry that already covers it. Update that one instead of duplicating.
 4. Prepend the entry under `## YYYY-MM-DD <rule>`.
 5. If the rule is a standing preference about how to work (not a one-off), propose the exact line to add to
-   `CLAUDE.md` or the relevant `.claude/rules/*.md`, and wait for her yes before editing those files.
+   `CLAUDE.md` or the relevant `.claude/rules/*.md`, and wait for their yes before editing those files.
 
 ## What not to save
 - One-off typos, in-session redirects, anything obvious from reading the code.

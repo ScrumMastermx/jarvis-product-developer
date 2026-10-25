@@ -8,7 +8,7 @@ description: |
 
 # Ship: tests, scrub, commit, push, PR
 
-Runs inside the project repo she is working in (not this workspace, unless the change is here).
+Runs inside the project repo they are working in (not this workspace, unless the change is here).
 
 ## Preconditions (stop if any fails)
 - `/review` has run on this diff and its findings are fixed. If not, run it first.
@@ -24,7 +24,9 @@ Runs inside the project repo she is working in (not this workspace, unless the c
 5. `git commit -m "<one imperative line>"`, e.g. `Add retry to invoice sync`. Check `git log -1 --format=%B`
    holds only that line: no trailers, no generated-by, no links.
 6. `git push -u origin <branch>`. Rejected → pull --rebase once more, push once more. Rejected again → stop.
-7. `gh pr create --base <target> --title "<the commit line>" --body-file <tmp>` where the body has:
+7. If `gh auth status` fails: stop here, print the branch's compare URL (`https://github.com/<owner>/<repo>/compare/<target>...<branch>`)
+   and the PR body below for them to paste; say `gh auth login` fixes it next time. Otherwise
+   `gh pr create --base <target> --title "<the commit line>" --body-file <tmp>` where the body has:
    **What** (3 lines) · **Why** · **Tests** (the command and the pasted summary line) · **Review**: "checklist +
    adversarial second pass ran; findings fixed: <list or none>; delete-the-fix: N tests fail without the change"
    · **Notes for the reviewer** (deploy order, config changes, anything irreversible).

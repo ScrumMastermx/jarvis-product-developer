@@ -9,7 +9,7 @@ description: |
 # Test: write, run, prove
 
 ## Steps
-1. **Find the change.** `git diff` (or the files she names). List the behaviours it adds or alters, one line each.
+1. **Find the change.** `git diff` (or the files they name). List the behaviours it adds or alters, one line each.
 2. **Find the project's way.** Read `notes/projects/<name>.md` for the test runner, fixture style and folder
    layout. If none, grep for the test config (`pytest.ini`, `jest.config`, `vitest.config`, `*.test.*`) and copy
    the nearest existing test's shape. Conventions of the repo win.

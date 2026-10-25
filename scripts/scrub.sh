@@ -6,7 +6,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
+CALLER_PWD="$PWD"
 
 PATTERNS=(
   'password[[:space:]]*[:=]'
@@ -22,18 +22,23 @@ PATTERNS=(
   'C:\\Users\\'
 )
 
+# Explicit paths are resolved against the caller's directory (so /ship can call this from a project repo);
+# a path that does not exist is an error, never a silent "clean".
 candidates=()
 if [ "$#" -gt 0 ]; then
-  candidates=("$@")
+  for f in "$@"; do
+    case "$f" in /*|[A-Za-z]:*) candidates+=("$f") ;; *) candidates+=("$CALLER_PWD/$f") ;; esac
+  done
 else
-  while IFS= read -r -d '' f; do candidates+=("$f"); done \
+  cd "$ROOT"
+  while IFS= read -r -d '' f; do candidates+=("$ROOT/$f"); done \
     < <(git ls-files -z --cached --others --exclude-standard)
 fi
 
 scan=()
 for f in ${candidates[@]+"${candidates[@]}"}; do
-  case "$f" in scripts/scrub.sh|SCRUB.md) continue ;; esac
-  [ -f "$f" ] && scan+=("$f")
+  case "$f" in "$ROOT"/scripts/scrub.sh|"$ROOT"/SCRUB.md) continue ;; esac
+  if [ -f "$f" ]; then scan+=("$f"); else echo "scrub: no such file: $f" >&2; exit 2; fi
 done
 
 hits=0

@@ -25,7 +25,7 @@ The script prints each hit as `file:line:match` and exits 1. Clean tree: `scrub:
 
 ```bash
 bash scripts/scrub.sh                 # whole repo
-bash scripts/scrub.sh path/to/file    # specific files (also works from a project repo)
+bash scripts/scrub.sh path/to/file    # specific files, relative to where you run it (works from a project repo)
 SCRUB_ONLY=3 bash scripts/scrub.sh    # one pattern, for testing
 ```
 
@@ -36,5 +36,5 @@ pattern to make a hit go away.
 
 ## Credentials
 
-Live in environment variables or `.env` files, which are git-ignored and read-only to Claude
-(`.claude/settings.json`). Never paste one into a file in this repo.
+Live in environment variables or `.env` / `.env.*` files, which are git-ignored and off limits to Claude
+(denied in `.claude/settings.json`). Never paste one into a file in this repo.

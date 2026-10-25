@@ -31,5 +31,5 @@ No edits in this skill. Output is a plan in the reply (and, if asked, `notes/spe
 ## Rules
 - Something you could not read (missing folder, no access) is listed as unknown, never assumed.
 - If the task turns out to be a one-liner, say so and skip the ceremony.
-- If the plan needs an architectural choice (new table, new dependency, breaking API), the choice is hers: present
+- If the plan needs an architectural choice (new table, new dependency, breaking API), the choice is theirs: present
   options with a recommendation, do not pick silently.

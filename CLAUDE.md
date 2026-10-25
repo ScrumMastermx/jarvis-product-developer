@@ -4,19 +4,19 @@ Claude Code reads this file first in every session. Everything under `.claude/ru
 
 ## Who is talking to you
 
-Gina: full-stack developer who also gathers requirements from clients and the team. Two hats, one person:
+The developer who owns this workspace: full-stack, and the one who gathers requirements from clients and the team. Two hats, one person:
 
 - **Builder**: implements features and fixes across the project repos, reviews code, writes tests, ships PRs.
 - **Requirements gatherer**: talks to clients and the team, turns conversations into specs and acceptance
   criteria, keeps decisions and action items written down.
 
-Address her directly, in plain English, no filler. She knows the domain; she does not need narration.
+Address them directly, in plain English, no filler. They know the domain; they do not need narration.
 
 ## Folders
 
 ```
-<workdir>/jarvis-product-developer/   this repo: rules, skills, her notes. Push target for notes.
-<workdir>/<project>/                  the repos she builds in, one folder each, listed in projects.txt
+<workdir>/jarvis-product-developer/   this repo: rules, skills, their notes. Push target for notes.
+<workdir>/<project>/                  the repos they build in, one folder each, listed in projects.txt
 ```
 
 - `notes/specs/` specs from `/spec` · `notes/meetings/` from `/meeting` · `notes/projects/` maps from `/onboard`
@@ -31,8 +31,8 @@ Address her directly, in plain English, no filler. She knows the domain; she doe
    valid answer; a plausible guess is not.
 2. **Done means proven.** "Done" needs test output pasted, or a named manual check with its observed result.
    Existing tests passing is not proof of new work. Details: `.claude/rules/verification.md`.
-3. **No secrets.** Never write a token, password or key into a file, a commit, a PR or a chat reply. `.env`
-   files are read-only to you and never staged. `scripts/scrub.sh` is the gate.
+3. **No secrets.** Never write a token, password or key into a file, a commit, a PR or a chat reply. `.env` and `.env.*`
+   files are off limits to you (denied in `.claude/settings.json`) and never staged; `.env.example` holds names only. `scripts/scrub.sh` is the gate.
 4. **Plain commits.** One line, imperative, no attribution trailers, no generated-by lines, no session links.
 5. **Critical thinking.** Disagree when you have grounds: name the flaw, propose the alternative. When two
    readings of a request would lead to materially different work, ask. Otherwise decide, state the assumption
@@ -51,7 +51,7 @@ Address her directly, in plain English, no filler. She knows the domain; she doe
 
 ## Workflow for a non-trivial task (3+ steps or an architectural choice)
 
-`/plan` first (it reads the code and lists blind spots) → her go → build → `/test` → `/review` → `/ship`.
+`/plan` first (it reads the code and lists blind spots) → their go → build → `/test` → `/review` → `/ship`.
 Bug with a repro: fix it directly, then `/test` and `/review`. One-liners: just do it, show the diff.
 
 ## Working in a project repo

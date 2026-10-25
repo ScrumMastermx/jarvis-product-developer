@@ -40,4 +40,4 @@ line what is still open, if anything, and that it is ready for `/ship` or not.
 - Review the lines the change touched; pre-existing issues in untouched lines are noted in one sentence, not fixed.
 - Bundled fixes shipped with a feature are reviewed, not dismissed as noise.
 - Security findings are blockers. Style findings are suggestions.
-- Never post a review or approval on a PR unless she says so explicitly.
+- Never post a review or approval on a PR unless they say so explicitly.

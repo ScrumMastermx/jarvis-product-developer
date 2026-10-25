@@ -7,15 +7,16 @@ Copy and paste each block. Steps 1 and 2 need the machine's admin account once.
 Admin PowerShell (Start → type `powershell` → right-click → Run as administrator):
 
 ```powershell
-winget install Git.Git
+winget install Git.Git GitHub.cli
 ```
 
-Close the window. This installs Git plus **Git Bash**, the terminal used for everything below.
+Close the window. This installs Git plus **Git Bash** (the terminal used for everything below) and the GitHub CLI (`gh`), which `/ship` uses to open pull requests.
 
 ## 2. Claude Code
 
-Go to https://claude.ai/code and follow the installer for Windows. Sign in with the Claude account. Open a new
-Git Bash window (Start → "Git Bash") and confirm:
+Go to https://claude.ai/code and follow the installer for Windows (a Claude plan that includes Claude Code is
+needed). Sign-in happens the first time you run `claude`, not during the install. Open a new Git Bash window
+(Start → "Git Bash") and confirm:
 
 ```bash
 claude --version
@@ -37,6 +38,14 @@ bash scripts/setup.sh
 The script checks the tools, sets LF line endings and rebase-on-pull, and asks for the git name and email if
 they are not set. Re-run it any time; `bash scripts/setup.sh --check` only reports.
 
+Then sign the GitHub CLI in (it also stores the credential Git uses for pushes):
+
+```bash
+gh auth login
+```
+
+Pick GitHub.com → HTTPS → login with a web browser, and follow the code it shows.
+
 ## 4. Projects
 
 Clone the repos you work in **next to** this folder, so they land at `~/code/<project>`:
@@ -54,6 +63,8 @@ Add each one to `projects.txt` (folder name + URL) so Claude knows it exists.
 cd ~/code/jarvis-product-developer
 claude
 ```
+
+The first run asks you to sign in with the Claude account in the browser. Type `/` to see the commands below.
 
 Inside Claude:
 

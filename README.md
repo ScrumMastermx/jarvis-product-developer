@@ -18,15 +18,19 @@ the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global 
 
 **Windows** (step by step with troubleshooting: [docs/SETUP-WINDOWS.md](docs/SETUP-WINDOWS.md))
 
-1. Admin PowerShell: `winget install Git.Git`
-2. Install Claude Code: https://claude.ai/code (follow the Windows installer), sign in once.
+1. Admin PowerShell: `winget install Git.Git GitHub.cli`, then close it
+2. Install Claude Code: https://claude.ai/code (follow the Windows installer); it asks you to sign in on first run.
 3. Git Bash:
    ```bash
    mkdir -p ~/code && cd ~/code
    git clone https://github.com/ScrumMastermx/jarvis-product-developer.git
    cd jarvis-product-developer && bash scripts/setup.sh
+   gh auth login
    claude
    ```
+
+If you already have personal Claude Code skills named `spec`, `review`, `ship` or `learn` in `~/.claude/skills/`,
+they shadow the ones here; start with `claude --setting-sources project` or rename yours.
 
 **macOS / Linux**: install Git and Claude Code, then the same three lines.
 
@@ -53,8 +57,8 @@ headed: [ROADMAP.md](ROADMAP.md).
 
 ## Guardrails
 
-`scripts/scrub.sh` blocks credentials, personal paths and attribution trailers; it runs locally before every
-push and in CI on every push and PR ([SCRUB.md](SCRUB.md)). Tokens never live in this repo.
+`scripts/scrub.sh` blocks credentials, personal paths and attribution trailers; `/save` and `/ship` run it before every
+push, and CI runs it on every push and PR (a plain `git push` skips the local run) ([SCRUB.md](SCRUB.md)). Tokens never live in this repo.
 
 ## License
 

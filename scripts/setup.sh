@@ -36,26 +36,38 @@ if command -v claude >/dev/null 2>&1 || command -v claude.cmd >/dev/null 2>&1; t
 else
   warn "claude (Claude Code) not found on PATH. Install it from https://claude.ai/code and reopen this terminal."
 fi
+# gh is what /ship uses to open pull requests; without it /ship stops after the push and prints the compare URL.
+if command -v gh >/dev/null 2>&1; then
+  if gh auth status >/dev/null 2>&1; then say "  ok      gh (signed in)"; else warn "gh is installed but not signed in: run  gh auth login  (needed by /ship to open PRs)"; fi
+else
+  case "$OS" in
+    windows) warn "gh (GitHub CLI) not found: admin PowerShell  winget install GitHub.cli  then reopen Git Bash and run  gh auth login" ;;
+    mac)     warn "gh (GitHub CLI) not found:  brew install gh  then  gh auth login" ;;
+    *)       warn "gh (GitHub CLI) not found: https://cli.github.com then  gh auth login" ;;
+  esac
+fi
 if [ "${#missing[@]}" -gt 0 ]; then
   case "$OS" in
     mac)     say "Install with Homebrew (https://brew.sh):  brew install ${missing[*]}" ;;
-    windows) say "Install from an admin PowerShell:  winget install Git.Git   (curl ships with Git for Windows)" ;;
+    windows) say "Install from an admin PowerShell:  winget install Git.Git GitHub.cli   (curl ships with Git for Windows), then reopen Git Bash" ;;
     linux)   say "Install with apt:  sudo apt update && sudo apt install ${missing[*]}" ;;
   esac
   die "Install the missing tools above, then re-run scripts/setup.sh"
 fi
 
 say "  Optional runtimes (depends on the projects you work in):"
-for t in node npm python3 python gh; do
+for t in node npm python3 python; do
+  # On Windows, "python"/"python3" may be the Microsoft Store alias stub: running it opens the Store. Detect it
+  # by its path (WindowsApps) and never execute it.
+  if [ "$OS" = windows ] && command -v "$t" 2>/dev/null | grep -qi 'WindowsApps'; then
+    say "  --      $t is the Microsoft Store stub, not Python (see docs/SETUP-WINDOWS.md troubleshooting)"; continue
+  fi
   if command -v "$t" >/dev/null 2>&1 && "$t" --version >/dev/null 2>&1; then
     say "  ok      $t ($("$t" --version 2>/dev/null | head -n1))"
   else
     say "  --      $t not found (install only if a project needs it)"
   fi
 done
-if [ "$OS" = windows ] && command -v python3 >/dev/null 2>&1 && ! python3 -c '' >/dev/null 2>&1; then
-  warn "python3 on PATH is the Microsoft Store stub. Turn off its alias: Settings > Apps > Advanced app settings > App execution aliases."
-fi
 
 # ---- 3. git defaults --------------------------------------------------------
 say "== 3/4 Git defaults"
