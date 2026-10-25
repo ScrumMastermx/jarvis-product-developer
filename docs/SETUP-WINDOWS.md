@@ -14,9 +14,14 @@ Close the window. This installs Git plus **Git Bash** (the terminal used for eve
 
 ## 2. Claude Code
 
-Go to https://claude.ai/code and follow the installer for Windows (a Claude plan that includes Claude Code is
-needed). Sign-in happens the first time you run `claude`, not during the install. Open a new Git Bash window
-(Start → "Git Bash") and confirm:
+Normal PowerShell (not admin):
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+A Claude plan that includes Claude Code is needed. Sign-in happens the first time you run `claude`, not during
+the install. Open a new Git Bash window (Start → "Git Bash") and confirm:
 
 ```bash
 claude --version

@@ -19,7 +19,7 @@ the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global 
 **Windows** (step by step with troubleshooting: [docs/SETUP-WINDOWS.md](docs/SETUP-WINDOWS.md))
 
 1. Admin PowerShell: `winget install Git.Git GitHub.cli`, then close it
-2. Install Claude Code: https://claude.ai/code (follow the Windows installer); it asks you to sign in on first run.
+2. Normal PowerShell: `irm https://claude.ai/install.ps1 | iex` (Claude Code; it asks you to sign in on first run).
 3. Git Bash:
    ```bash
    mkdir -p ~/code && cd ~/code
