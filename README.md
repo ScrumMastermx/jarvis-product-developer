@@ -16,23 +16,27 @@ the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global 
 
 ## Install
 
-**Windows** (step by step with troubleshooting: [docs/SETUP-WINDOWS.md](docs/SETUP-WINDOWS.md))
+**Windows** (PowerShell; step by step with troubleshooting: [docs/SETUP-WINDOWS.md](docs/SETUP-WINDOWS.md))
 
-1. Admin PowerShell: `winget install Git.Git GitHub.cli`, then close it
-2. Normal PowerShell: `irm https://claude.ai/install.ps1 | iex` (Claude Code; it asks you to sign in on first run).
-3. Git Bash:
-   ```bash
-   mkdir -p ~/code && cd ~/code
+1. Admin PowerShell: `winget install Git.Git GitHub.cli`, then close it.
+2. Normal PowerShell: `irm https://claude.ai/install.ps1 | iex` (Claude Code; it asks you to sign in on first run). Open a new window and run `claude --version`.
+3. Then, in PowerShell:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
+   mkdir ~\code -Force | Out-Null; cd ~\code
    git clone https://github.com/ScrumMastermx/jarvis-product-developer.git
-   cd jarvis-product-developer && bash scripts/setup.sh
+   cd jarvis-product-developer
+   .\scripts\setup.ps1
    gh auth login
-   claude
    ```
+4. Start working: `cd ~\code\jarvis-product-developer`, then `claude`.
+
+`.\scripts\setup.ps1 -Check` only reports, without changing anything. Prefer Git Bash? Use `bash scripts/setup.sh`.
 
 If you already have personal Claude Code skills named `spec`, `review`, `ship` or `learn` in `~/.claude/skills/`,
 they shadow the ones here; start with `claude --setting-sources project` or rename yours.
 
-**macOS / Linux**: install Git and Claude Code, then the same three lines.
+**macOS / Linux**: install Git and Claude Code, then clone the repo and run `bash scripts/setup.sh`.
 
 ## Commands
 

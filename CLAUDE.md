@@ -63,5 +63,7 @@ Bug with a repro: fix it directly, then `/test` and `/review`. One-liners: just 
 
 ## Windows note
 
-The shell is Git Bash. Use forward slashes, `bash scripts/x.sh` not `./x.sh`, and expect `python` rather than
-`python3`. Line endings are LF (`.gitattributes`); never introduce CRLF.
+The user's terminal may be PowerShell, but Claude Code's own Bash tool on Windows runs through Git Bash. Inside
+Claude keep using `bash scripts/scrub.sh`, forward slashes and LF, and expect `python` rather than `python3`.
+Never introduce CRLF (`.gitattributes`). When telling the user a command to type themselves, give the PowerShell
+form (for example `.\scripts\setup.ps1 -Check`).
