@@ -34,7 +34,7 @@ Say "== 1/4 Platform: PowerShell $($PSVersionTable.PSVersion) on $osName"
 # ---- 2. tools ---------------------------------------------------------------
 Say '== 2/4 Required tools'
 $missing = @()
-foreach ($t in @('git', 'curl.exe')) {
+foreach ($t in @('git')) {
     $cmd = Get-Command $t -ErrorAction SilentlyContinue
     if ($cmd) {
         $ver = ''
@@ -69,7 +69,7 @@ if (Get-Command gh -ErrorAction SilentlyContinue) {
 }
 
 if ($missing.Count -gt 0) {
-    Say 'Install from an admin PowerShell:  winget install Git.Git GitHub.cli   (curl.exe ships with Windows 10+ and Git for Windows), then open a new window'
+    Say 'Install from an admin PowerShell:  winget install Git.Git GitHub.cli   then open a new window'
     Write-Host 'ERROR: Install the missing tools above, then re-run scripts\setup.ps1' -ForegroundColor Red
     exit 1
 }
