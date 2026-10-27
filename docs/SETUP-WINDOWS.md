@@ -7,10 +7,11 @@ Copy and paste each block. Steps 1 and 2 need the machine's admin account once.
 Admin PowerShell (Start → type `powershell` → right-click → Run as administrator):
 
 ```powershell
-winget install Git.Git GitHub.cli
+winget install Git.Git GitHub.cli Python.Python.3.12
 ```
 
-Close the window. This installs Git and the GitHub CLI (`gh`), which `/ship` uses to open pull requests.
+Close the window. This installs Git, the GitHub CLI (`gh`, which `/ship` uses to open pull requests) and Python
+(which runs the admin tools: `/facturas`, `/conciliar`, `/inventario`, `/excel`, `/reporte`).
 
 ## 2. Claude Code
 
@@ -42,8 +43,8 @@ cd jarvis-product-developer
 gh auth login
 ```
 
-The script checks the tools, sets LF line endings and rebase-on-pull, and asks for the git name and email if
-they are not set. Re-run it any time; `.\scripts\setup.ps1 -Check` only reports.
+The script checks the tools, creates the Python environment (`.venv`, with openpyxl) for the admin tools, sets LF
+line endings and rebase-on-pull, and asks for the git name and email if they are not set. Re-run it any time; `.\scripts\setup.ps1 -Check` only reports.
 
 `gh auth login` signs the GitHub CLI in (it also stores the credential Git uses for pushes). Pick GitHub.com →
 HTTPS → login with a web browser, and follow the code it shows.
@@ -73,6 +74,21 @@ Inside Claude:
 - `/onboard <project>` maps a project (stack, how to run, how to test) into `notes/projects/`.
 - `/spec` starts a feature spec from a conversation.
 - Then `/plan`, `/test`, `/review`, `/ship` as you build.
+- `/facturas ejemplos/cfdi` tries the admin tools: it writes an Excel with 2 sample invoices to `reportes\`.
+  Your real files go in `datos\` (`explorer datos`); nothing in `datos\` or `reportes\` is ever pushed.
+
+## 6. Status line
+
+The bar at the bottom of Claude shows only the workspace name:
+
+```
+Jarvis Product Developer
+```
+
+It comes from `statusLine` in `.claude/settings.json`, so it works as soon as you open Claude in this folder. Nothing to install.
+To change the text, edit that one line. `/statusline` in Claude can replace it with context and cost info if you ever want more.
+Two side effects: Claude asks you to trust the folder the first time (same gate as hooks), and with a custom status line
+Claude hides most footer hints such as `? for shortcuts` (the shortcuts still work).
 
 ## Desktop app instead of the terminal
 
@@ -92,6 +108,8 @@ Same skills, same rules. Claude's own shell tool still runs through Git Bash.
   `winget install Python.Python.3.12` and open a new window.
 - **Git asks for a password on push**: use a GitHub personal access token as the password, or run `gh auth login`
   and let the GitHub CLI manage credentials.
+- **`pip install` fails** during `setup.ps1`: internet or antivirus. Re-run `.\scripts\setup.ps1`.
+- **Excel says the file is in use**: close it in Excel before regenerating; `~$name.xlsx` lock files are ignored.
 - **Antivirus slows `git` or `claude`**: exclude `~\code` from real-time scanning if company policy allows.
 - **Prefer Git Bash? use `bash scripts/setup.sh`**: open Git Bash and run it from the repo folder (not `./scripts/setup.sh`,
   which can fail with "Permission denied"). Variables set in `~/.bashrc` are missing in Git Bash because it reads

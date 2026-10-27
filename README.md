@@ -3,8 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![scrub](https://github.com/ScrumMastermx/jarvis-product-developer/actions/workflows/scrub.yml/badge.svg)](https://github.com/ScrumMastermx/jarvis-product-developer/actions/workflows/scrub.yml)
 
 A ready-made [Claude Code](https://claude.ai/code) workspace for a developer who also gathers requirements:
-build features, review code like a senior engineer, turn client conversations into specs, and keep
-the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global config required.
+build features, review code like a senior engineer, turn client conversations into specs, keep
+the lessons, and handle the admin side (CFDI invoices, bank reconciliation, inventory, monthly reports). Stack-agnostic. Everything Claude needs is in this repo: no global config required.
 
 ## In 60 seconds
 
@@ -18,7 +18,7 @@ the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global 
 
 **Windows** (PowerShell; step by step with troubleshooting: [docs/SETUP-WINDOWS.md](docs/SETUP-WINDOWS.md))
 
-1. Admin PowerShell: `winget install Git.Git GitHub.cli`, then close it.
+1. Admin PowerShell: `winget install Git.Git GitHub.cli Python.Python.3.12`, then close it.
 2. Normal PowerShell: `irm https://claude.ai/install.ps1 | iex` (Claude Code; it asks you to sign in on first run). Open a new window and run `claude --version`.
 3. Then, in PowerShell:
    ```powershell
@@ -31,12 +31,15 @@ the lessons. Stack-agnostic. Everything Claude needs is in this repo: no global 
    ```
 4. Start working: `cd ~\code\jarvis-product-developer`, then `claude`.
 
+`setup.ps1` checks the tools, creates the Python environment for the admin tools and sets safe git defaults.
 `.\scripts\setup.ps1 -Check` only reports, without changing anything. Prefer Git Bash? Use `bash scripts/setup.sh`.
 
 If you already have personal Claude Code skills named `spec`, `review`, `ship` or `learn` in `~/.claude/skills/`,
 they shadow the ones here; start with `claude --setting-sources project` or rename yours.
 
-**macOS / Linux**: install Git and Claude Code, then clone the repo and run `bash scripts/setup.sh`.
+**macOS / Linux**: install Git, Python 3.9+ and Claude Code, then clone the repo and run `bash scripts/setup.sh`.
+
+The status line at the bottom of Claude shows only the workspace name (`.claude/settings.json` → `statusLine`); nothing to install.
 
 ## Commands
 
@@ -51,6 +54,19 @@ they shadow the ones here; start with `claude --setting-sources project` or rena
 | `/ship` | Pull, test, scrub, commit, push, open the PR with the evidence |
 | `/learn` | Saves a correction or lesson to `notes/learnings.md` |
 | `/save` | Commits and pushes your notes in this repo |
+
+Admin tools (in Spanish; answer follows the language you write in):
+
+| Type | What happens |
+|---|---|
+| `/facturas datos/facturas-octubre` | Folder of CFDI 4.0 XML → Excel table with monthly and per-issuer totals, duplicates and mismatches flagged |
+| `/conciliar` | Bank statement vs ledger: matched, pending on each side, summary (xlsx + md) |
+| `/inventario` | Stock, turnover, suggested reorder point, items without movement, count differences |
+| `/reporte` | Monthly report (sales, purchases, expenses, inventory) with reconciled totals |
+| `/excel` | Create, clean or fix a spreadsheet: duplicates, RFC/date/amount normalisation, formulas |
+
+Real files go in `datos/`, outputs land in `reportes/`; both are git-ignored and never leave the machine. Try it with
+`/facturas ejemplos/cfdi`.
 
 Plain questions work too: "how does login work in shop-api?" gets an answer with file references.
 

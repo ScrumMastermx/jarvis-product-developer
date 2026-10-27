@@ -6,3 +6,14 @@ node_modules/
 .DS_Store
 __pycache__/
 /tmp/
+
+# Admin tools (/facturas, /conciliar, /inventario, /excel, /reporte): real business files never leave this machine.
+datos/*
+!datos/README.md
+!datos/.gitkeep
+# Generated reports carry real RFCs, names and amounts inside the xlsx (binary: scrub cannot see it). Local only.
+reportes/*
+!reportes/.gitkeep
+.venv/
+*.xlsx~
+~$*.xlsx

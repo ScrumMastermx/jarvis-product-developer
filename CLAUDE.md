@@ -17,6 +17,11 @@ Address them directly, in plain English, no filler. They know the domain; they d
 ```
 <workdir>/jarvis-product-developer/   this repo: rules, skills, their notes. Push target for notes.
 <workdir>/<project>/                  the repos they build in, one folder each, listed in projects.txt
+datos/      real business files for the admin tools (Excel, CSV, CFDI XML). Private, git-ignored. Read them here.
+ejemplos/   fictional files to try the admin tools (invented names, generic RFC XAXX010101000).
+reportes/   what the admin tools generate (xlsx + md, dated). LOCAL ONLY, git-ignored like datos/.
+scripts/    setup, scrub and the Python tools (run with the venv interpreter, never activated:
+            `.venv/Scripts/python.exe` on Windows, `.venv/bin/python` on mac/linux).
 ```
 
 - `notes/specs/` specs from `/spec` · `notes/meetings/` from `/meeting` · `notes/projects/` maps from `/onboard`
@@ -48,6 +53,19 @@ Address them directly, in plain English, no filler. They know the domain; they d
 10. **JavaScript defaults use `??`, not `||`.** `value || fallback` swallows `0`, `false` and `""`.
 11. **Client words are the client's.** Never put a requirement in a client's mouth. A guess about what they want
     is labelled a guess (`.claude/rules/requirements.md`).
+
+## Admin tools (Spanish)
+
+`/facturas`, `/conciliar`, `/inventario`, `/excel` and `/reporte` read spreadsheets and CFDI 4.0 invoices from
+`datos/` and write reports to `reportes/`. Their skills and rules (`.claude/rules/datos.md`, `excel.md`,
+`privacidad.md`) are written in Spanish; answer in the language the user writes in. Two rules on top of the list above:
+
+- **Never move money.** No payment, transfer, bank operation, CFDI stamping or SAT filing. Prepare, compute,
+  reconcile, draft; the user acts.
+- **Never invent a figure.** Every number cites its file, sheet and cell; a total without a source is not delivered.
+  Tax questions get the general rule plus "confirm it with your accountant".
+
+If `.venv` is missing, ask the user to run `.\scripts\setup.ps1` (`bash scripts/setup.sh` on mac/linux).
 
 ## Workflow for a non-trivial task (3+ steps or an architectural choice)
 

@@ -27,12 +27,33 @@ function Get-FirstLine($exe, $arg) {
     } catch { return '' }
 }
 
+# Finds a real Python. The "python" under WindowsApps is the Microsoft Store shortcut: never executed.
+function Find-Python {
+    $tries = @(
+        @{ Name = 'py';      Args = @('-3') },
+        @{ Name = 'python';  Args = @() },
+        @{ Name = 'python3'; Args = @() }
+    )
+    foreach ($t in $tries) {
+        $cmd = Get-Command $t.Name -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($null -eq $cmd) { continue }
+        if ($cmd.Source -like '*WindowsApps*') { continue }
+        try {
+            $ver = & $cmd.Source @($t.Args) -c "import sys; assert sys.version_info >= (3, 9); print(sys.version)" 2>$null
+            if ($LASTEXITCODE -eq 0 -and $ver) {
+                return @{ Exe = $cmd.Source; Args = $t.Args; Version = (($ver | Select-Object -First 1) -split ' ')[0] }
+            }
+        } catch { continue }
+    }
+    return $null
+}
+
 # ---- 1. platform ------------------------------------------------------------
 $osName = [System.Environment]::OSVersion.Platform
-Say "== 1/4 Platform: PowerShell $($PSVersionTable.PSVersion) on $osName"
+Say "== 1/5 Platform: PowerShell $($PSVersionTable.PSVersion) on $osName"
 
 # ---- 2. tools ---------------------------------------------------------------
-Say '== 2/4 Required tools'
+Say '== 2/5 Required tools'
 $missing = @()
 foreach ($t in @('git')) {
     $cmd = Get-Command $t -ErrorAction SilentlyContinue
@@ -45,6 +66,10 @@ foreach ($t in @('git')) {
         $missing += $t
     }
 }
+
+# Python runs the admin tools (/facturas, /conciliar, /inventario, /excel, /reporte).
+$py = Find-Python
+if ($py) { Say "  ok      python ($($py.Version))" } else { Say '  MISSING python 3.9+ (needed by the admin tools; the Microsoft Store stub does not count)'; $missing += 'python' }
 
 if (Get-Command claude -ErrorAction SilentlyContinue) {
     Say '  ok      claude'
@@ -69,30 +94,47 @@ if (Get-Command gh -ErrorAction SilentlyContinue) {
 }
 
 if ($missing.Count -gt 0) {
-    Say 'Install from an admin PowerShell:  winget install Git.Git GitHub.cli   then open a new window'
+    Say 'Install from an admin PowerShell:  winget install Git.Git GitHub.cli Python.Python.3.12   then open a new window'
+    Say 'If "python" opens the Microsoft Store: Settings > Apps > Advanced app settings > App execution aliases, turn python off.'
     Write-Host 'ERROR: Install the missing tools above, then re-run scripts\setup.ps1' -ForegroundColor Red
     exit 1
 }
 
+
 Say '  Optional runtimes (depends on the projects you work in):'
-foreach ($t in @('node', 'npm', 'python', 'python3')) {
+foreach ($t in @('node', 'npm')) {
     $cmd = Get-Command $t -ErrorAction SilentlyContinue | Select-Object -First 1
     if (-not $cmd) {
         Say "  --      $t not found (install only if a project needs it)"
-        continue
-    }
-    # python/python3 may be the Microsoft Store alias stub: running it opens the Store. Detect it by path
-    # (WindowsApps) and never execute it.
-    if ($cmd.Source -like '*WindowsApps*') {
-        Say "  --      $t is the Microsoft Store stub, not Python (see docs/SETUP-WINDOWS.md troubleshooting)"
         continue
     }
     $ver = Get-FirstLine $t '--version'
     if ($ver) { Say "  ok      $t ($ver)" } else { Say "  --      $t found but did not report a version" }
 }
 
-# ---- 3. git defaults --------------------------------------------------------
-Say '== 3/4 Git defaults'
+# ---- 3. python venv for the admin tools -------------------------------------
+Say '== 3/5 Python environment (.venv) for the admin tools'
+$Root = Split-Path -Parent $PSScriptRoot
+# Windows: .venv\Scripts\python.exe. macOS/Linux (pwsh): .venv/bin/python.
+function Get-VenvPython { $w = Join-Path $Root '.venv\Scripts\python.exe'; $u = Join-Path $Root '.venv/bin/python'; if (Test-Path $w) { return $w } elseif (Test-Path $u) { return $u } else { return $w } }
+$venvPy = Get-VenvPython
+if ($Check) {
+    if (Test-Path $venvPy) { Say '  ok      .venv exists' } else { Say '  MISSING .venv (run: .\scripts\setup.ps1)' }
+} else {
+    if (-not (Test-Path $venvPy)) {
+        & $py.Exe @($py.Args) -m venv (Join-Path $Root '.venv')
+        if ($LASTEXITCODE -ne 0) { Write-Host 'ERROR: could not create .venv' -ForegroundColor Red; exit 1 }
+        $venvPy = Get-VenvPython
+    }
+    & $venvPy -m pip install -q --disable-pip-version-check -r (Join-Path $Root 'requirements.txt')
+    if ($LASTEXITCODE -ne 0) { Write-Host 'ERROR: pip could not install requirements.txt. Internet?' -ForegroundColor Red; exit 1 }
+    $v = & $venvPy -c "import openpyxl; print(openpyxl.__version__)"
+    if ($LASTEXITCODE -ne 0) { Write-Host 'ERROR: openpyxl did not install.' -ForegroundColor Red; exit 1 }
+    Say "  ok      .venv ready (openpyxl $v)"
+}
+
+# ---- 4. git defaults --------------------------------------------------------
+Say '== 4/5 Git defaults'
 function Set-IfUnset($key, $value, $why) {
     $cur = Get-GitConfig $key
     if ($cur) {
@@ -126,12 +168,13 @@ foreach ($key in @('user.name', 'user.email')) {
     }
 }
 
-# ---- 4. done ----------------------------------------------------------------
-Say '== 4/4 Done'
+# ---- 5. done ----------------------------------------------------------------
+Say '== 5/5 Done'
 if ($Check) {
-    Say 'Check complete. Run without -Check to apply the git defaults.'
+    Say 'Check complete. Run without -Check to create .venv and apply the git defaults.'
 } else {
     Say 'Next: cd into this folder, run  claude  and type  /onboard <project>  for a repo in ..\ or  /spec  to start a feature.'
+    Say 'Admin tools: try  /facturas ejemplos/cfdi  (writes an Excel to reportes\).'
     Say 'First time? docs/SETUP-WINDOWS.md has the walkthrough; docs/EXTENDING.md shows how to add skills.'
 }
 exit 0

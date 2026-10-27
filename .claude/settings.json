@@ -14,5 +14,9 @@
       "Edit(**/.env)",
       "Edit(**/.env.*)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "echo 'Jarvis Product Developer'"
   }
 }
